@@ -1,17 +1,17 @@
-from discord.ext import commands
 from typing import Iterable
 from loadEnv import PREFIX
 from colorama import Fore
-import discord
+from discord.ext import commands
 
 
-class Bot(discord.Bot):
+class Bot(commands.Bot):
 
     started = False
 
-    async def __init__(self, cogs: Iterable, *args, **kwargs):
+    def __init__(self, cogs: Iterable, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._cogs = cogs
+
 
     async def on_ready(self):
 
@@ -25,6 +25,6 @@ class Bot(discord.Bot):
 
     async def load_cogs(self):
         for cog in self._cogs:
-            await self.add_cog(cog)
+            await self.add_cog(cog(self))
 
         self._cogs = ()  # Remover cogs, já que on_ready pode rodar mais de uma vez

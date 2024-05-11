@@ -28,7 +28,14 @@ class Comandos(commands.Cog):
         message = message.replace(' ou ', ', ')
 
         options = message.split(', ')
-                
+
+        subst = {'me': 'se', 'te':'me', 'meu': 'seu', 'minha':'sua', 'eu': 'você'}
+
+        for idx, option in enumerate(options):
+            for palavra in option.split():
+                if palavra.lower() in subst:
+                    options[idx] = options[idx].replace(palavra, subst[palavra]).capitalize()
+            
         await ctx.send(random.choice(options))
 
     @commands.command()

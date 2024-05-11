@@ -17,8 +17,9 @@ class Comandos(commands.Cog):
 
     @commands.command()
     async def ask(self, ctx: commands.Context):
-        options = ['Sim', 'Não','Sim', 'Não','Sim', 'Não','Sim', 'Não','Não','Não','Não','Não','Sim']
-        await ctx.send(random.choice(options))
+        options = ['Sim', 'Não']
+        weights = [5/13, 8/13] # A lista antes tinha 5 sims e 8 nãos
+        await ctx.send(random.choices(options, weights=weights)[0])
 
     @commands.command()
     async def choose(self, ctx: commands.Context):

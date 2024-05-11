@@ -19,5 +19,6 @@ rapaizinho = ChatBot('Rapazinho',
 trainer = ChatterBotCorpusTrainer(rapaizinho)
 
 # Train the chatbot based on the portuguese corpus
-trainer.train("chatterbot.corpus.portuguese")
-trainer.train("chatterbot.corpus.portuguese.conversations")
+# trainer.train("chatterbot.corpus.portuguese")
+# trainer.train("chatterbot.corpus.portuguese.conversations")
+#

@@ -23,20 +23,12 @@ class Comandos(commands.Cog):
 
     @commands.command()
     async def choose(self, ctx: commands.Context):
-        message = ctx.message.content
-        message = message.replace('%choose', '')
-        if "?" in message:
-            message = message.replace('?', '')
+        message = ctx.message.content.replace(PREFIX + 'choose', '').replace('?','')
+        
+        message = message.replace(' ou ', ', ')
 
-        if "ou" and ", " in message:
-            message = message.replace('ou', ', ')
-            options = message.split(', ')
-        
-        elif "ou" in message:
-            options = message.split('ou')
-        else:
-            options = message.split(', ')
-        
+        options = message.split(', ')
+                
         await ctx.send(random.choice(options))
 
     @commands.Cog.listener()

@@ -31,6 +31,28 @@ class Comandos(commands.Cog):
                 
         await ctx.send(random.choice(options))
 
+    @commands.command()
+    async def nerd(self, ctx: commands.Context):
+        await ctx.send(file=discord.File('gifs/nerd_dragon.gif'))
+
+    @commands.command()
+    async def goofy(self, ctx: commands.Context):
+        await ctx.send(file=discord.File('gifs/bb_dragon.gif'))
+
+    @commands.command()
+    async def greedy(self, ctx: commands.Context):
+        await ctx.send(file=discord.File('gifs/urso_spyro.gif'))
+
+    @commands.command()
+    async def desperate(self, ctx: commands.Context):
+        await ctx.send(file=discord.File('gifs/wizards.gif'))
+
+    
+    @commands.command()
+    async def pat(self, ctx: commands.Context, member: discord.Member):
+        # mentions = ctx.message.author.mention
+        await ctx.send(member.mention, file=discord.File('gifs/anime_pat.gif'))
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         

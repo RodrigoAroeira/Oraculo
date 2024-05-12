@@ -26,5 +26,5 @@ class Bot(commands.Bot):
     async def load_cogs(self):
         for cog in self._cogs:
             await self.add_cog(cog(self))
-
+        await self.tree.sync()
         self._cogs = ()  # Remover cogs, já que on_ready pode rodar mais de uma vez

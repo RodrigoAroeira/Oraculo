@@ -4,6 +4,7 @@ time.clock = time.time
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
 
+
 rapaizinho = ChatBot('Rapazinho', 
     storage_adapter='chatterbot.storage.SQLStorageAdapter',
     logic_adapters=[

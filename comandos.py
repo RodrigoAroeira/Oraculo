@@ -1,9 +1,12 @@
 from discord.ext import commands
 from chatterbot.conversation import Statement
+from chatterbot.trainers import ListTrainer
 import random
 from chatbot import rapaizinho
 from loadEnv import PREFIX
 import discord
+
+trainer = ListTrainer(rapaizinho)
 
 class Comandos(commands.Cog):
     
@@ -60,6 +63,34 @@ class Comandos(commands.Cog):
         # mentions = ctx.message.author.mention
         await ctx.send(member.mention, file=discord.File('gifs/anime_pat.gif'))
 
+    @commands.command()
+    async def train(self, ctx: commands.Context):
+        message = ctx.message.content.replace(PREFIX + 'train', '').replace('%','')
+        mensagem = Statement(text=message, tags=['conversa'])
+        last_message = message
+        response = rapaizinho.generate_response(mensagem)
+        await ctx.send(response)
+
+        await ctx.send(f"'{response.text}' foi uma resposta coerente para '{message}'?\nSim ou Não")
+
+        def check(m):
+            return 'sim' in m.content or 'Sim' in m.content or 'Não' in m.content or 'não' in m.content
+
+        current_message = await self.bot.wait_for('message', check=check)
+        if ('sim' in current_message.content or 'Sim' in current_message.content):
+            correct_response = Statement(text=response.text, persona='Rapazinho')
+            rapaizinho.learn_response(correct_response, last_message)
+            trainer.train([last_message, response.text])
+            await ctx.send('Aprendido!')
+        else:
+            await ctx.send('Por favor, me diga qual seria uma resposta coerente: ')
+            current_message = await self.bot.wait_for('message')
+            correct_response = Statement(text=current_message.content, persona='Rapazinho')
+            rapaizinho.learn_response(correct_response, last_message)
+            trainer.train([last_message, response.text])
+            await ctx.send('Aprendido!')
+
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         
@@ -72,9 +103,8 @@ class Comandos(commands.Cog):
         if not self.started:
             return
 
-        mensagem = Statement(text=message.content)
+        mensagem = Statement(text=message.content, tags=['conversa'])
         response = rapaizinho.generate_response(mensagem)
-        
         # response = f"{message.author.nick.split()[0]} disse {mensagem}"
         await message.channel.send(response)
         

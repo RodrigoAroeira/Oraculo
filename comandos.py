@@ -1,6 +1,7 @@
 from discord.ext import commands
 from chatterbot.conversation import Statement
 from chatterbot.trainers import ListTrainer
+from markov import Markov, predict_words
 import random
 from chatbot import rapaizinho
 from loadEnv import PREFIX
@@ -62,6 +63,25 @@ class Comandos(commands.Cog):
     async def pat(self, ctx: commands.Context, member: discord.Member):
         # mentions = ctx.message.author.mention
         await ctx.send(member.mention, file=discord.File('gifs/anime_pat.gif'))
+
+    @commands.command()
+    async def markov(self, ctx: commands.Context):
+        message = ctx.message.content.replace(PREFIX + 'markov', '')
+        message = message.split()
+        m = Markov(file_path='data/prompts.txt')
+        chain = m.model
+        await ctx.send(predict_words(chain, first_word = message[0], number_of_words = int(message[1])))
+
+    @commands.command()
+    async def write(self, ctx: commands.Context):
+        message = ctx.message.content.replace(PREFIX + 'write', '')
+        punctuations = ["!", ".", "?"]
+        if message[-1:] not in punctuations:
+            message += '.'
+        file = open('data/prompts.txt', 'a')
+        file.write(message)
+        file.close()
+        await ctx.send("Mensagem foi guardada na memória!")
 
     @commands.command()
     async def train(self, ctx: commands.Context):

@@ -6,7 +6,8 @@ class Markov():
     def __init__(self, file_path):
         self.file_path = file_path
     
-        self.text = self.get_text().translate(str.maketrans('','', string.punctuation))
+        self.text = self.get_text()
+        # .translate(str.maketrans('','', string.punctuation))
         self.model = self.model()
         
     def get_text(self):

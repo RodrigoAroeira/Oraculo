@@ -105,6 +105,16 @@ class Comandos(commands.Cog):
             trainer.train([last_message, response.text])
             await ctx.send('Aprendido!')
 
+    @commands.command()
+    async def abencoe(self, ctx: commands.Context):
+        channel = await self.bot.fetch_channel(850396757128249376)
+        messages_sync = channel.history(limit=None)
+        messages = []
+        async for message in messages_sync:
+            if message.content.count('"') >= 2:
+                messages.append(message.content)
+
+        await channel.send(random.choice(messages)) 
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):

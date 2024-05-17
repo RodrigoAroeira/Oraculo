@@ -28,7 +28,7 @@ class Markov():
         # print('Treinado com sucesso!')
         return markov_dict
       
-def predict_words(chain: dict, first_word: str, number_of_words=5):
+def predict_words(chain: dict, first_word: str, number_of_words: int=5):
     if first_word in list(chain.keys()):
         word1 = str(first_word)
         

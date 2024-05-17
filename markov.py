@@ -15,7 +15,7 @@ class Markov():
             text = file.readlines()
         return ' '.join(text)
     
-
+    @property
     def model(self):
         words = self.text.split(' ')
         markov_dict = defaultdict(list)

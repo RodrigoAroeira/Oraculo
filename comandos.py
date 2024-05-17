@@ -111,7 +111,7 @@ class Comandos(commands.Cog):
         messages_sync = channel.history(limit=None)
         messages = [message.content async for message in messages_sync if message.content.count('"') >= 2]
 
-        await channel.send(random.choice(messages)) 
+        await ctx.channel.send(random.choice(messages)) 
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):

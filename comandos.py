@@ -1,3 +1,4 @@
+from typing import Optional
 from discord.ext import commands
 from chatterbot.conversation import Statement
 from chatterbot.trainers import ListTrainer
@@ -19,8 +20,8 @@ class Comandos(commands.Cog):
     async def ping(self, ctx: commands.Context):
         await ctx.send("Pong!")
 
-    @commands.command()
-    async def ask(self, ctx: commands.Context):
+    @commands.hybrid_command()
+    async def ask(self, ctx: commands.Context, *, pergunta: Optional [str] = None):
         options = ['Sim', 'Não']
         weights = [5/13, 8/13] # A lista antes tinha 5 sims e 8 nãos
         await ctx.send(random.choices(options, weights=weights)[0])

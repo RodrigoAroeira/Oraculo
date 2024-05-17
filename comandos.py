@@ -18,16 +18,19 @@ class Comandos(commands.Cog):
     
     @commands.command()
     async def ping(self, ctx: commands.Context):
+        """ Pong!"""
         await ctx.send("Pong!")
 
     @commands.hybrid_command()
     async def ask(self, ctx: commands.Context, *, pergunta: Optional [str] = None):
+        """ Responde uma pergunta com 'Sim' ou 'Não'"""
         options = ['Sim', 'Não']
         weights = [5/13, 8/13] # A lista antes tinha 5 sims e 8 nãos
         await ctx.send(random.choices(options, weights=weights)[0])
 
     @commands.hybrid_command()
     async def choose(self, ctx: commands.Context, *, message: str):
+        """ Escolhe uma das alternativas dada na frase, separadas por 'ou' ou vírgula."""
         
         message = message.replace(' ou ', ', ')
 
@@ -66,6 +69,7 @@ class Comandos(commands.Cog):
 
     @commands.hybrid_command()
     async def markov(self, ctx: commands.Context, *, message: str):
+        """ Gera uma frase aleatória com base nos prompts salvos."""
         msg = message.split()
         m = Markov(file_path='data/prompts.txt')
         chain = m.model
@@ -73,6 +77,7 @@ class Comandos(commands.Cog):
 
     @commands.hybrid_command()
     async def write(self, ctx: commands.Context, *, message: str):
+        """ Adiciona novos textos para o Markov Chain."""
         punctuations = ["!", ".", "?"]
         if message[-1] not in punctuations:
             message += '.'
@@ -82,6 +87,7 @@ class Comandos(commands.Cog):
 
     @commands.hybrid_command()
     async def train(self, ctx: commands.Context, *, message: str):
+        """ Verifica se o bot está respondendo a mensagem adequadamente por meio de feedback."""
         mensagem = Statement(text=message, tags=['conversa'])
         last_message = message
         response = rapaizinho.generate_response(mensagem)
@@ -108,6 +114,7 @@ class Comandos(commands.Cog):
 
     @commands.command()
     async def abencoe(self, ctx: commands.Context):
+        """ Seleciona e envia uma frase aleatória do canal 'frases abençoadas' que estiver entre aspas. """
         channel = await self.bot.fetch_channel(850396757128249376)
         messages_sync = channel.history(limit=None)
         messages = [message.content async for message in messages_sync if message.content.count('"') >= 2 and not message.author.bot]
@@ -133,12 +140,14 @@ class Comandos(commands.Cog):
         
     @commands.hybrid_command()
     async def start(self, ctx: commands.Context):
+        """ Inicia uma conversa com o bot."""
         self.started = True
 
         await ctx.send("Rapaizinho iniciado!")
         
     @commands.hybrid_command()
     async def stop(self, ctx: commands.Context):
+        """ Para a conversa com o bot."""
         self.started = False
 
         await ctx.send("Rapaizinho desligado!")

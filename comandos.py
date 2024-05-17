@@ -1,4 +1,3 @@
-from typing import Optional
 from discord.ext import commands
 from chatterbot.conversation import Statement
 from chatterbot.trainers import ListTrainer
@@ -22,7 +21,7 @@ class Comandos(commands.Cog):
         await ctx.send("Pong!")
 
     @commands.hybrid_command()
-    async def ask(self, ctx: commands.Context, *, pergunta: Optional [str] = None):
+    async def ask(self, ctx: commands.Context, *, pergunta: str):
         """ Responde uma pergunta com 'Sim' ou 'Não'"""
         options = ['Sim', 'Não']
         weights = [5/13, 8/13] # A lista antes tinha 5 sims e 8 nãos

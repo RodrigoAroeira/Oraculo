@@ -109,7 +109,7 @@ class Comandos(commands.Cog):
     async def abencoe(self, ctx: commands.Context):
         channel = await self.bot.fetch_channel(850396757128249376)
         messages_sync = channel.history(limit=None)
-        messages = [message.content async for message in messages_sync if message.content.count('"') >= 2]
+        messages = [message.content async for message in messages_sync if message.content.count('"') >= 2 and not message.author.bot]
 
         await ctx.channel.send(random.choice(messages)) 
 

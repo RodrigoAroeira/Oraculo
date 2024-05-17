@@ -32,11 +32,10 @@ class Comandos(commands.Cog):
     async def choose(self, ctx: commands.Context, *, message: str):
         """ Escolhe uma das alternativas dada na frase, separadas por 'ou' ou vírgula."""
         
-        message = message.replace(' ou ', ', ')
-
+        message = message.replace(' ou ', ', ').replace('?', '.')
         options = message.split(', ')
 
-        subst = {'me': 'se', 'te':'me', 'meu': 'seu', 'minha':'sua', 'eu': 'você'}
+        subst = {'me': 'se', 'te':'me', 'meu': 'seu', 'minha':'sua', 'eu': 'você','você': 'eu'}
 
         for idx, option in enumerate(options):
             for palavra in option.split():

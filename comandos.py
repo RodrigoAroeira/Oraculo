@@ -109,6 +109,10 @@ class Comandos(commands.Cog):
             trainer.train([last_message, response.text])
             await ctx.send('Aprendido!')
 
+    @commands.command()
+    async def abencoe(self, ctx: commands.Context):
+        channel = await self.bot.fetch_channel(850396757128249376)
+        await channel.send("Canal encontrado.") 
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):

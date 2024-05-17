@@ -18,8 +18,3 @@ rapaizinho = ChatBot('Rapazinho',
     database_uri='sqlite:///database.sqlite3')
 
 trainer = ChatterBotCorpusTrainer(rapaizinho)
-
-# Train the chatbot based on the portuguese corpus
-# trainer.train("chatterbot.corpus.portuguese")
-# trainer.train("chatterbot.corpus.portuguese.conversations")
-#

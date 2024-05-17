@@ -6,7 +6,8 @@ class Markov():
     def __init__(self, file_path: str):
         self.file_path = file_path
     
-        self.text = self.get_text().translate(str.maketrans('','', string.punctuation))
+        self.text = self.get_text()
+        # .translate(str.maketrans('','', string.punctuation))
         self.model = self.model()
         
     def get_text(self):
@@ -15,7 +16,6 @@ class Markov():
             text = file.readlines()
         return ' '.join(text)
     
-    @property
     def model(self):
         words = self.text.split(' ')
         markov_dict = defaultdict(list)
@@ -24,7 +24,7 @@ class Markov():
             markov_dict[current_word].append(next_word)
 
         markov_dict = dict(markov_dict)
-        print(markov_dict)
+        # print(markov_dict)
         # print('Treinado com sucesso!')
         return markov_dict
       
@@ -38,6 +38,16 @@ def predict_words(chain: dict, first_word: str, number_of_words: int=5):
             word2 = random.choice(chain[word1])
             word1 = word2
             predictions += ' ' + word2
+
+        punctuations = ["!", ".", "?"]
+        if predictions[-1] not in punctuations:
+            predictions += '.'
+
+        wrong_finishing = [",", ";", ":"]
+        if predictions[-1] in wrong_finishing:
+            new_choice = random.choice(punctuations)
+            predictions.replace(predictions[:-1], new_choice)
+
         return predictions
     else:
         return "Palavra não foi treinada."

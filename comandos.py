@@ -80,6 +80,12 @@ class Comandos(commands.Cog):
         punctuations = ["!", ".", "?"]
         if message[-1] not in punctuations:
             message += '.'
+
+        wrong_finishing = [",", ";", ":"]
+        if message[-1] in wrong_finishing:
+            new_choice = random.choice(punctuations)
+            message.replace(message[:-1], new_choice)
+
         with open('data/prompts.txt', 'a') as file:
             file.write(message)
         await ctx.send("Mensagem foi guardada na memória!")

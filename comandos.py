@@ -15,19 +15,18 @@ class Comandos(commands.Cog):
         self.bot = bot
         self.started = False
     
-    @commands.hybrid_command()
+    @commands.command()
     async def ping(self, ctx: commands.Context):
         await ctx.send("Pong!")
 
-    @commands.hybrid_command()
+    @commands.command()
     async def ask(self, ctx: commands.Context):
         options = ['Sim', 'Não']
         weights = [5/13, 8/13] # A lista antes tinha 5 sims e 8 nãos
         await ctx.send(random.choices(options, weights=weights)[0])
 
     @commands.hybrid_command()
-    async def choose(self, ctx: commands.Context):
-        message = ctx.message.content.replace(PREFIX + 'choose', '').replace('?','')
+    async def choose(self, ctx: commands.Context, *, message: str):
         
         message = message.replace(' ou ', ', ')
 
@@ -65,26 +64,23 @@ class Comandos(commands.Cog):
         await ctx.send(member.mention, file=discord.File('gifs/anime_pat.gif'))
 
     @commands.hybrid_command()
-    async def markov(self, ctx: commands.Context):
-        message = ctx.message.content.replace(PREFIX + 'markov', '')
-        message = message.split()
+    async def markov(self, ctx: commands.Context, *, message: str):
+        msg = message.split()
         m = Markov(file_path='data/prompts.txt')
         chain = m.model
-        await ctx.send(predict_words(chain, first_word = message[0], number_of_words = int(message[1])))
+        await ctx.send(predict_words(chain, first_word = msg[0], number_of_words = int(msg[1])))
 
     @commands.hybrid_command()
-    async def write(self, ctx: commands.Context):
-        message = ctx.message.content.replace(PREFIX + 'write', '')
+    async def write(self, ctx: commands.Context, *, message: str):
         punctuations = ["!", ".", "?"]
-        if message[-1:] not in punctuations:
+        if message[-1] not in punctuations:
             message += '.'
-        with open('data/prompts.txt', 'a', encoding='utf-8') as file:
+        with open('data/prompts.txt', 'a') as file:
             file.write(message)
         await ctx.send("Mensagem foi guardada na memória!")
 
     @commands.hybrid_command()
-    async def train(self, ctx: commands.Context):
-        message = ctx.message.content.replace(PREFIX + 'train', '').replace('%','')
+    async def train(self, ctx: commands.Context, *, message: str):
         mensagem = Statement(text=message, tags=['conversa'])
         last_message = message
         response = rapaizinho.generate_response(mensagem)
@@ -92,11 +88,11 @@ class Comandos(commands.Cog):
 
         await ctx.send(f"'{response.text}' foi uma resposta coerente para '{message}'?\nSim ou Não")
 
-        def check(m):
+        def check(m: discord.Message):
             return any(word in m.content.lower() for word in ['sim', 'não'])
 
         current_message = await self.bot.wait_for('message', check=check)
-        if ('sim' in current_message.content or 'Sim' in current_message.content):
+        if ('sim' in current_message.content.lower()):
             correct_response = Statement(text=response.text, persona='Rapazinho')
             rapaizinho.learn_response(correct_response, last_message)
             trainer.train([last_message, response.text])
@@ -109,10 +105,6 @@ class Comandos(commands.Cog):
             trainer.train([last_message, response.text])
             await ctx.send('Aprendido!')
 
-    @commands.command()
-    async def abencoe(self, ctx: commands.Context):
-        channel = await self.bot.fetch_channel(850396757128249376)
-        await channel.send("Canal encontrado.") 
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -125,9 +117,6 @@ class Comandos(commands.Cog):
         
         if not self.started:
             return
-        
-        if message.channel != self.current_channel:
-            return
 
         mensagem = Statement(text=message.content, tags=['conversa'])
         response = rapaizinho.generate_response(mensagem)
@@ -137,7 +126,6 @@ class Comandos(commands.Cog):
     @commands.hybrid_command()
     async def start(self, ctx: commands.Context):
         self.started = True
-        self.current_channel = ctx.channel
 
         await ctx.send("Rapaizinho iniciado!")
         

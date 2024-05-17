@@ -3,19 +3,19 @@ import string
 import random
 
 class Markov():
-    def __init__(self, file_path):
+    def __init__(self, file_path: str):
         self.file_path = file_path
     
-        self.text = self.get_text()
-        # .translate(str.maketrans('','', string.punctuation))
+        self.text = self.get_text().translate(str.maketrans('','', string.punctuation))
         self.model = self.model()
         
     def get_text(self):
         text = []
-        for line in open(self.file_path):
-            text.append(line)
+        with open(self.file_path, 'r', encoding='utf-8') as file:
+            text = file.readlines()
         return ' '.join(text)
     
+
     def model(self):
         words = self.text.split(' ')
         markov_dict = defaultdict(list)
@@ -24,10 +24,11 @@ class Markov():
             markov_dict[current_word].append(next_word)
 
         markov_dict = dict(markov_dict)
+        print(markov_dict)
         # print('Treinado com sucesso!')
         return markov_dict
       
-def predict_words(chain, first_word, number_of_words=5):
+def predict_words(chain: dict, first_word: str, number_of_words=5):
     if first_word in list(chain.keys()):
         word1 = str(first_word)
         

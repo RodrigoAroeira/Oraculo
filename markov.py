@@ -1,5 +1,4 @@
 from collections import defaultdict
-import string
 import random
 
 class Markov():

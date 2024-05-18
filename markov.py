@@ -24,7 +24,7 @@ class Markov():
             markov_dict[current_word].append(next_word)
 
         markov_dict = dict(markov_dict)
-        # print(markov_dict)
+        print(markov_dict)
         # print('Treinado com sucesso!')
         return markov_dict
       
@@ -35,20 +35,28 @@ def predict_words(chain: dict, first_word: str, number_of_words: int=5):
         predictions = word1.capitalize()
 
         for i in range(number_of_words-1):
+            if len(chain[word1]) == 0:
+                break
             word2 = random.choice(chain[word1])
             word1 = word2
             predictions += ' ' + word2
 
-        punctuations = ["!", ".", "?"]
-        if predictions[-1] not in punctuations:
-            predictions += '.'
+        punctuations = ['!', '.', '?']
+        wrong_finishing = [',', ';', ':']
+        temp = list(predictions)
+        print(temp[-1])
+        if temp[-1] in wrong_finishing:
+            temp.pop(-1)
+            temp.append(random.choice(punctuations))
 
-        wrong_finishing = [",", ";", ":"]
-        if predictions[-1] in wrong_finishing:
-            new_choice = random.choice(punctuations)
-            predictions.replace(predictions[:-1], new_choice)
+        elif temp[-1] not in punctuations:
+            temp.append('.')
 
-        return predictions
+        # print(temp)
+
+        final_prediction = ''.join([str(item) for item in temp])
+
+        return final_prediction
     else:
         return "Palavra não foi treinada."
   

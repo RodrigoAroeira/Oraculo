@@ -76,17 +76,23 @@ class Comandos(commands.Cog):
     @commands.hybrid_command()
     async def write(self, ctx: commands.Context, *, message: str):
         """ Adiciona novos textos para o Markov Chain."""
-        punctuations = ["!", ".", "?"]
-        if message[-1] not in punctuations:
-            message += '.'
+        punctuations = ['!', '.', '?']
+        wrong_finishing = [',', ';', ':']
+        temp = list(message)
+        # print(temp[-1])
+        if temp[-1] in wrong_finishing:
+            temp.pop(-1)
+            temp.append(random.choice(punctuations))
 
-        wrong_finishing = [",", ";", ":"]
-        if message[-1] in wrong_finishing:
-            new_choice = random.choice(punctuations)
-            message.replace(message[:-1], new_choice)
+        elif temp[-1] not in punctuations:
+            temp.append('.')
+
+        # print(temp)
+
+        final_message = ''.join([str(item) for item in temp])
 
         with open('data/prompts.txt', 'a') as file:
-            file.write(message)
+            file.write(final_message)
         await ctx.send("Mensagem foi guardada na memória!")
 
     @commands.hybrid_command()

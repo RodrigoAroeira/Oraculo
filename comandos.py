@@ -131,6 +131,22 @@ class Comandos(commands.Cog):
 
         await ctx.channel.send(random.choice(messages)) 
 
+    @commands.command()
+    async def rerun(self, ctx: commands.Context):
+        """Roda o comando da mensagem respondida """
+        
+        if not (isinstance(ref := ctx.message.reference, discord.MessageReference)):
+            return
+        
+        replied = ref.resolved
+
+        if not isinstance(replied, discord.Message):
+            return
+        
+        if replied.content.startswith(PREFIX):
+            await self.bot.process_commands(replied)
+            
+        
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         

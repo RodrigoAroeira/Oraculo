@@ -135,12 +135,10 @@ class Comandos(commands.Cog):
     async def rerun(self, ctx: commands.Context):
         """Roda o comando da mensagem respondida """
         
-        if not (isinstance(ref := ctx.message.reference, discord.MessageReference)):
+        if not isinstance(ref := ctx.message.reference, discord.MessageReference):
             return
         
-        replied = ref.resolved
-
-        if not isinstance(replied, discord.Message):
+        if not isinstance(replied := ref.resolved, discord.Message):
             return
         
         if replied.content.startswith(PREFIX):

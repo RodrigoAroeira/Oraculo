@@ -122,14 +122,19 @@ class Comandos(commands.Cog):
             trainer.train([last_message, response.text])
             await ctx.send('Aprendido!')
 
-    @commands.command()
+    @commands.hybrid_command()
     async def abencoe(self, ctx: commands.Context):
         """ Seleciona e envia uma frase aleatória do canal 'frases abençoadas' que estiver entre aspas. """
         channel = await self.bot.fetch_channel(850396757128249376)
         messages_sync = channel.history(limit=None)
-        messages = [message.content async for message in messages_sync if message.content.count('"') >= 2 and not message.author.bot]
+        messages = [message async for message in messages_sync if message.content.count('"') >= 2 and not message.author.bot]
 
-        await ctx.channel.send(random.choice(messages)) 
+        choice = random.choice(messages)
+        choice_link = choice.jump_url
+        
+        link_embed = discord.Embed(description="Link da mensagem original", url=choice_link)
+        
+        await ctx.send(choice.content, embed=link_embed)        
 
     @commands.command()
     async def rerun(self, ctx: commands.Context):
@@ -142,6 +147,7 @@ class Comandos(commands.Cog):
             return
         
         if replied.content.startswith(PREFIX):
+            replied.author = ctx.author
             await self.bot.process_commands(replied)
             
         

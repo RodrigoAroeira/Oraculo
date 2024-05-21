@@ -12,7 +12,6 @@ class Bot(commands.Bot):
         super().__init__(*args, **kwargs)
         self._cogs = cogs
 
-
     async def on_ready(self):
 
         await self.load_cogs()

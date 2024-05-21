@@ -1,6 +1,3 @@
-import time 
-time.clock = time.time
-
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
 

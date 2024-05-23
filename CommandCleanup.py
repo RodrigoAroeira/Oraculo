@@ -14,11 +14,11 @@ class ConfirmButton(discord.ui.Button):
         self.original_ctx = original_ctx
 
     async def callback(self, interaction: discord.Interaction):
-        if not interaction.channel.permissions_for(interaction.channel.me).manage_messages:
+        if not self.original_ctx.channel.permissions_for(interaction.channel.me).manage_messages:
             await interaction.response.send_message("Nice try, mas eu ainda não tenho permissões para fazer isso", ephemeral=True, delete_after=15)
             return
         await interaction.message.delete(delay=15)
-        return
+
         for message in self.messages:
             await message.delete()
         await interaction.message.delete()

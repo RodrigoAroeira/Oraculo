@@ -10,11 +10,11 @@ import discord
 trainer = ListTrainer(rapaizinho)
 
 class Comandos(commands.Cog):
-    
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.started = False
-    
+
     @commands.command()
     async def ping(self, ctx: commands.Context):
         """ Pong!"""
@@ -30,7 +30,7 @@ class Comandos(commands.Cog):
     @commands.hybrid_command()
     async def choose(self, ctx: commands.Context, *, message: str):
         """ Escolhe uma das alternativas dada na frase, separadas por 'ou' ou vírgula."""
-        
+
         message = message.replace(' ou ', ', ').replace('?', '.')
         options = message.split(', ')
 
@@ -40,7 +40,7 @@ class Comandos(commands.Cog):
             for palavra in option.split():
                 if palavra.lower() in subst:
                     options[idx] = options[idx].replace(palavra, subst[palavra]).capitalize()
-            
+
         await ctx.send(random.choice(options))
 
     @commands.hybrid_command()
@@ -59,19 +59,43 @@ class Comandos(commands.Cog):
     async def desperate(self, ctx: commands.Context):
         await ctx.send(file=discord.File('gifs/wizards.gif'))
 
-    
+
     @commands.hybrid_command()
     async def pat(self, ctx: commands.Context, member: discord.Member):
         # mentions = ctx.message.author.mention
         await ctx.send(member.mention, file=discord.File('gifs/anime_pat.gif'))
 
     @commands.hybrid_command()
-    async def markov(self, ctx: commands.Context, *, message: str):
+    async def markov(self, ctx: commands.Context, *, message: str, number_of_words: int = 5):
         """ Gera uma frase aleatória com base nos prompts salvos."""
-        msg = message.split()
+        msg = message.lower().split()
         m = Markov(file_path='data/prompts.txt')
         chain = m.model
         await ctx.send(predict_words(chain, first_word = msg[0], number_of_words = int(msg[1])))
+
+    @commands.command()
+    async def more(self, ctx: commands.Context, number_of_words: int):
+        """Continua escrevendo a mensagem marcada """
+
+        if not isinstance(ref := ctx.message.reference, discord.MessageReference):
+            return
+
+        if not isinstance(replied := ref.resolved, discord.Message):
+            return
+
+        content = replied.content[:-1]
+
+        last_word = content.split()[-1]
+        m = Markov(file_path='data/prompts.txt')
+        chain = m.model
+
+        continued_list = predict_words(chain, first_word = last_word, number_of_words = number_of_words).split()[1:]
+
+        continued = ' '.join(continued_list)
+
+        final = f"{content} {continued}".capitalize()
+
+        await ctx.send(final)
 
     @commands.hybrid_command()
     async def write(self, ctx: commands.Context, *, message: str):
@@ -89,10 +113,10 @@ class Comandos(commands.Cog):
 
         # print(temp)
 
-        final_message = ''.join([str(item) for item in temp])
+        final_message = ''.join([str(item) + '\n' for item in temp])
 
         with open('data/prompts.txt', 'a') as file:
-            file.write(final_message)
+            file.writelines(final_message)
         await ctx.send("Mensagem foi guardada na memória!")
 
     @commands.hybrid_command()
@@ -131,35 +155,35 @@ class Comandos(commands.Cog):
 
         choice = random.choice(messages)
         choice_link = choice.jump_url
-        
+
         link_embed = discord.Embed(description="Link da mensagem original", url=choice_link)
-        
-        await ctx.send(choice.content, embed=link_embed)        
+
+        await ctx.send(choice.content, embed=link_embed)
 
     @commands.command()
     async def rerun(self, ctx: commands.Context):
         """Roda o comando da mensagem respondida """
-        
+
         if not isinstance(ref := ctx.message.reference, discord.MessageReference):
             return
-        
+
         if not isinstance(replied := ref.resolved, discord.Message):
             return
-        
+
         if replied.content.startswith(PREFIX):
             replied.author = ctx.author
             await self.bot.process_commands(replied)
-            
-        
+
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        
+
         if message.author.bot:
             return
-        
+
         if message.content.startswith(PREFIX):
             return 
-        
+
         if not self.started:
             return
 

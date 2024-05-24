@@ -7,7 +7,7 @@ class Markov:
 
     def get_lines(self) -> list[str]:
         with open(self.file_path, 'r', encoding='utf-8') as file:
-            return file.
+            return file.readlines()
 
     @property
     def model(self) -> dict[str, list[str]]:

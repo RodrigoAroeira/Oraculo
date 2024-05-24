@@ -15,7 +15,7 @@ class Markov:
         markov_dict = defaultdict(list)
 
         for line in lines:
-            word = line.strip().split()
+            words = line.strip().split()
             for current_word, next_word in zip(words[:-1], words[1:]):
                 if current_word and next_word:
                     markov_dict[current_word].append(next_word)

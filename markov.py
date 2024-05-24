@@ -1,33 +1,34 @@
 from collections import defaultdict
 import random
 
-class Markov():
+class Markov:
     def __init__(self, file_path: str):
         self.file_path = file_path
-    
-        self.text = self.get_text()
-        
-    def get_text(self):
-        text = []
+ 
+    def get_lines(self):
         with open(self.file_path, 'r', encoding='utf-8') as file:
-            text = file.readlines()
-        return ' '.join(text)
-    
+            return file.readlines()
+
     @property
-    def model(self) -> dict:
-        words = self.text.split(' ')
+    def model(self) -> dict[str, list[str]]:
+        lines = self.get_lines()
         markov_dict = defaultdict(list)
-    
+
         for current_word, next_word in zip(words[0:-1], words[1:]):
             markov_dict[current_word].append(next_word)
 
-        # print('Treinado com sucesso!')
+        for line in lines:
+            words = line.strip().split()
+            for current_word, next_word in zip(words[0:-1], words[1:]):
+                if current_word and next_word:
+                    markov_dict[current_word].append(next_word)
+
         return dict(markov_dict)
-      
+ 
 def predict_words(chain: dict, first_word: str, number_of_words: int=5):
     if first_word in list(chain.keys()):
         word1 = str(first_word)
-        
+
         predictions = word1.capitalize()
 
         for i in range(number_of_words-1):
@@ -40,7 +41,6 @@ def predict_words(chain: dict, first_word: str, number_of_words: int=5):
         punctuations = ['!', '.', '?']
         wrong_finishing = [',', ';', ':']
         temp = list(predictions)
-        print(temp[-1])
         if temp[-1] in wrong_finishing:
             temp.pop(-1)
             temp.append(random.choice(punctuations))

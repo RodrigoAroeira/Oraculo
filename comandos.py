@@ -156,7 +156,7 @@ class Comandos(commands.Cog):
         choice = random.choice(messages)
         choice_link = choice.jump_url
 
-        link_embed = discord.Embed(description="Link da mensagem original", url=choice_link)
+        link_embed = discord.Embed(title="Link da mensagem original", url=choice_link)
 
         await ctx.send(choice.content, embed=link_embed)
 
